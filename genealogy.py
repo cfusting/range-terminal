@@ -8,7 +8,7 @@ from fastsr.data.learning_data import LearningData
 from experiments.range_terminal import RT
 import utils
 
-best_num = 0
+best_num = 2
 experiment_class, experiment_name = utils.get_experiment_class_and_name(Control)
 model = SymbolicRegression()
 model.load('models/' + experiment_name)
@@ -57,28 +57,38 @@ def safe_log(x):
 
 median_error = np.median(errors)
 for k, v in best_genealogy.items():
+    xpoints = []
+    ypoints = []
+
+    def condition(y, median):
+        return y > 1.5 * safe_log(median)
     offspring = model.history_.genealogy_history[k]
     x1 = offspring.generation
     y1 = safe_log(offspring.error)
-    if y1 > 10 * np.log(median_error):
+    if condition(y1, median_error):
         continue
+    xpoints.append(x1)
+    ypoints.append(y1)
     if len(v) > 0:
         parent1 = model.history_.genealogy_history[v[0]]
         x2 = parent1.generation
         y2 = safe_log(parent1.error)
-        if y2 > 10 * np.log(median_error):
+        if condition(y2, median_error):
             continue
-        print('Connecting: (' + str(x1) + ' ,' + str(y1) + ') - (' + str(x2) + ' ,' + str(y2) + ')')
-        plt.plot([x1, x2], [y1, y2], marker='o')
+        xpoints.append(x2)
+        ypoints.append(y2)
+        # print('Connecting: (' + str(x1) + ' ,' + str(y1) + ') - (' + str(x2) + ' ,' + str(y2) + ')')
     if len(v) > 1:
         parent2 = model.history_.genealogy_history[v[1]]
-        x2 = parent2.generation
-        y2 = safe_log(parent2.error)
-        if y2 > 10 * np.log(median_error):
+        x3 = parent2.generation
+        y3 = safe_log(parent2.error)
+        if condition(y3, median_error):
             continue
-        print('Connecting: (' + str(x1) + ' ,' + str(y1) + ') - (' + str(x2) + ' ,' + str(y2) + ')')
-        plt.plot([x1, x2], [y1, y2], marker='o')
-plt.savefig('results/' + experiment_name + '_genealogy.png')
+        xpoints.extend([xpoints[0], x3, xpoints[0], x3, xpoints[1], x3])
+        ypoints.extend([ypoints[0], y3, ypoints[0], y3, ypoints[1], y3])
+        # print('Connecting: (' + str(x1) + ' ,' + str(y1) + ') - (' + str(x2) + ' ,' + str(y2) + ')')
+    plt.plot(xpoints, ypoints, marker='o')
+plt.savefig('results/' + experiment_name + '_genealogy.png', figsize=(10, 10), dpi=200)
 
 with open('results/' + experiment_name + '_genealogy.txt', 'w') as f:
     f.write(str(best_genealogy) + '\n')

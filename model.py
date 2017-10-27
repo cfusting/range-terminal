@@ -13,8 +13,8 @@ model = SymbolicRegression(experiment_class=experiment_class,
                            variable_names=training_data.variable_names,
                            variable_dict=training_data.variable_dict,
                            num_features=training_data.num_variables,
-                           pop_size=30,
-                           ngen=10,
+                           pop_size=200,
+                           ngen=1000,
                            crossover_probability=.5,
                            mutation_probability=.5)
 model.fit(training_data.predictors, training_data.response)
