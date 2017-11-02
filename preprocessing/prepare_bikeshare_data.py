@@ -1,6 +1,7 @@
 import pandas as pd
 
-from sklearn.model_selection import train_test_split
+
+from fastsr.data.learning_data import LearningData
 
 
 dat = pd.read_csv('data/hour.csv')
@@ -15,8 +16,8 @@ dat_train = dat_onehot.iloc[:, indices]
 cols = dat_train.columns.tolist()
 cols_ordered = cols[0:7] + cols[8:58] + [cols[7]]
 dat_train_ordered = dat_train[cols_ordered]
-train, test = train_test_split(dat_train_ordered, test_size=.2, shuffle=False)
-print("train: " + str(len(train)) + ", test: " + str(len(test)))
-store = pd.HDFStore('data/bike_convolution.hdf5')
-store['train'] = train
-store['test'] = test
+learning_data = LearningData()
+learning_data.from_data(dat_train_ordered, cols_ordered[:-1], 'ucibike')
+lag_variables = ['holiday', 'workingday', 'temp', 'atemp', 'hum', 'windspeed']
+learning_data.lag_predictors(6, column_names=lag_variables)
+learning_data.to_hdf('data/hour_lagged.hdf5')
