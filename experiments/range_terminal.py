@@ -2,9 +2,9 @@ import math
 from functools import partial
 
 from fastgp.parametrized import simple_parametrized_terminals as sp
-from fastgp.algorithms import afpo, operators
+from fastgp.algorithms import afpo, fast_evaluate
 from fastgp.parametrized import mutation
-from fastgp.experiments import fast_evaluate
+from fastgp.utilities import operators, metrics
 
 from fastsr.experiments import control
 
@@ -28,7 +28,7 @@ class RT(control.Control):
                  max_gen_grow=6,
                  subset_proportion=1,
                  subset_change_frequency=10,
-                 error_function=fast_evaluate.mean_squared_error,
+                 error_function=metrics.mean_squared_error,
                  num_randoms=1):
         super(RT, self).__init__(ngen,
                                  pop_size,

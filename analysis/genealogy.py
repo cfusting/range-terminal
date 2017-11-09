@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from fastsr.estimators.symbolic_regression import SymbolicRegression
 from fastsr.experiments.control import Control
-from fastsr.data.learning_data import LearningData
+from fastsr.containers.learning_data import LearningData
 
 from experiments.range_terminal import RT
 import utils

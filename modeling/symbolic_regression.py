@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 
 from fastsr.experiments.control import Control
 from fastsr.estimators.symbolic_regression import SymbolicRegression
-from fastsr.data.learning_data import LearningData
+from fastsr.containers.learning_data import LearningData
 
 from experiments.range_terminal import RT
 import utils
@@ -34,21 +34,21 @@ model = SymbolicRegression(experiment_class=experiment_class,
                            variable_names=training_data.variable_names,
                            variable_dict=training_data.variable_dict,
                            num_features=training_data.num_variables,
-                           pop_size=1000,
-                           ngen=5000,
+                           pop_size=10,
+                           ngen=2,
                            crossover_probability=.5,
                            mutation_probability=.5,
-                           subset_proportion=0.6,
-                           ensemble_size=3,
+                           subset_proportion=1,
+                           ensemble_size=1,
                            seed=args.seed)
 model.fit(X_train, y_train)
 validation_error = np.sqrt(model.score(X_train, y_train))
 test_error = np.sqrt(model.score(X_test, y_test))
 print('Model validation error: ' + str(validation_error))
 print('Model test error: ' + str(test_error))
-model.save(args.model + '/' + str(experiment_name) + training_data.name + '_' + str(args.seed))
+model.save(args.model + '/' + experiment_name + '_' + training_data.name + '_' + str(args.seed))
 if args.output:
-    with open(args.output + '/' + str(args.experiment) + '_validation.txt', 'a') as f:
-        f.write(str(validation_error + '\n'))
-    with open(args.output + '/' + str(args.experiment) + '_test.txt', 'a') as f:
-        f.write(str(test_error + '\n'))
+    with open(args.output + '/' + args.experiment + '_validation.txt', 'a') as f:
+        f.write(str(validation_error) + '\n')
+    with open(args.output + '/' + args.experiment + '_test.txt', 'a') as f:
+        f.write(str(test_error) + '\n')

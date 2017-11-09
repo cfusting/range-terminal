@@ -1,8 +1,6 @@
 import pandas as pd
 
-
-from fastsr.data.learning_data import LearningData
-
+from fastsr.containers.learning_data import LearningData
 
 dat = pd.read_csv('data/hour.csv')
 datetime_index = list()
