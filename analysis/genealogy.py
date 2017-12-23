@@ -11,11 +11,11 @@ import utils
 best_num = 0
 experiment_class, experiment_name = utils.get_experiment_class_and_name(RT)
 model = SymbolicRegression()
-model.load('saved_models/' + experiment_name + '_hour_simple_lagged_2017')
+model.load('saved_models/' + experiment_name + '_minimum_3432')
 
 training_data = LearningData()
-# training_data.from_file('data/minimum.csv')
-training_data.from_hdf('data/hour_simple_lagged.hdf5')
+training_data.from_file('data/minimum.csv')
+#training_data.from_hdf('data/energy_lagged.hdf5')
 experiment = experiment_class()
 pset = experiment.get_pset(training_data.num_variables, training_data.variable_type_indices,
                            training_data.variable_names, training_data.variable_dict)
@@ -34,20 +34,27 @@ def populate_individuals(history_index, generation):
     global maxgen
     global maxerror
     ind = model.history_.genealogy_history[history_index]
-    ind.error = scoring_toolbox.score(ind)[0]
-    ind.generation = generation
-    errors.append(ind.error)
-    if ind.error > maxerror:
-        maxerror = ind.error
-    parents = best_genealogy[history_index]
-    if len(parents) > 0:
-        populate_individuals(parents[0], generation + 1)
-    if len(parents) > 1:
-        populate_individuals(parents[1], generation + 1)
+    if not hasattr(ind, 'visited'):
+        ind.visited = True
+        ind.error = scoring_toolbox.score(ind)[0]
+        ind.generation = generation
+        errors.append(ind.error)
+        if ind.error > maxerror:
+            maxerror = ind.error
+        parents = best_genealogy[history_index]
+        if len(parents) > 0:
+            populate_individuals(parents[0], generation + 1)
+        if len(parents) > 1:
+            populate_individuals(parents[1], generation + 1)
+    else:
+        print('Loopback found to node: ' + str(history_index))
 
-for k in best_genealogy.keys():
-    populate_individuals(k, 1)
-    break
+keys = best_genealogy.keys()
+populate_individuals(max(keys), 1)
+for i in best_genealogy:
+    print(str(i), str(best_genealogy[i]))
+dupes = (len(keys) != len(set(keys)))
+print('duplicates: ' + str(dupes))
 
 
 def safe_log(x):

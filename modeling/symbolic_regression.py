@@ -9,6 +9,7 @@ from fastsr.estimators.symbolic_regression import SymbolicRegression
 from fastsr.containers.learning_data import LearningData
 
 from experiments.range_terminal import RT
+from experiments.range_terminal_no_mutation import RTNOMUT
 import utils
 
 parser = argparse.ArgumentParser(description='Run symbolic regression.')
@@ -21,8 +22,10 @@ args = parser.parse_args()
 
 if args.experiment == 'Control':
     experiment_class, experiment_name = utils.get_experiment_class_and_name(Control)
-else:
+elif args.experiment == 'RT':
     experiment_class, experiment_name = utils.get_experiment_class_and_name(RT)
+else:
+    experiment_class, experiment_name = utils.get_experiment_class_and_name(RTNOMUT)
 training_data = LearningData()
 training_data.from_file(args.data)
 X_train, X_test, y_train, y_test = train_test_split(training_data.predictors, training_data.response, test_size=0.1,
@@ -34,8 +37,8 @@ model = SymbolicRegression(experiment_class=experiment_class,
                            variable_names=training_data.variable_names,
                            variable_dict=training_data.variable_dict,
                            num_features=training_data.num_variables,
-                           pop_size=1000,
-                           ngen=100,
+                           pop_size=100,
+                           ngen=500,
                            crossover_probability=.5,
                            mutation_probability=.5,
                            subset_proportion=1,

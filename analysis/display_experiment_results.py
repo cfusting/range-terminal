@@ -8,4 +8,3 @@ args = parser.parse_args()
 
 dat = pd.read_csv(args.file, header=None)
 print(dat.describe())
-print(dat.median())
