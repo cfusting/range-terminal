@@ -4,6 +4,8 @@ import numpy as np
 
 from sklearn.model_selection import train_test_split
 
+from fastgp.logging.reports import save_log_to_csv
+
 from fastsr.experiments.control import Control
 from fastsr.estimators.symbolic_regression import SymbolicRegression
 from fastsr.containers.learning_data import LearningData
@@ -49,9 +51,11 @@ validation_error = np.sqrt(model.score(X_train, y_train))
 test_error = np.sqrt(model.score(X_test, y_test))
 print('Model validation error: ' + str(validation_error))
 print('Model test error: ' + str(test_error))
+ident = experiment_name + '_' + training_data.name + '_' + str(args.seed)
 model.save(args.model + '/' + experiment_name + '_' + training_data.name + '_' + str(args.seed))
 if args.output:
-    with open(args.output + '/' + args.experiment + '_validation.txt', 'a') as f:
+    with open(args.output + '/' + experiment_name + '_validation.txt', 'a') as f:
         f.write(str(validation_error) + '\n')
-    with open(args.output + '/' + args.experiment + '_test.txt', 'a') as f:
+    with open(args.output + '/' + experiment_name + '_test.txt', 'a') as f:
         f.write(str(test_error) + '\n')
+    save_log_to_csv(model.logbook_, args.output + '/' + ident)

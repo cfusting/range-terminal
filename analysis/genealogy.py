@@ -11,11 +11,11 @@ import utils
 best_num = 0
 experiment_class, experiment_name = utils.get_experiment_class_and_name(RT)
 model = SymbolicRegression()
-model.load('saved_models/' + experiment_name + '_minimum_3432')
+model.load('/home/cfusting/rtresults/energy_lagged/saved_models/' + experiment_name + '_energy_lagged_5503')
 
 training_data = LearningData()
-training_data.from_file('data/minimum.csv')
-#training_data.from_hdf('data/energy_lagged.hdf5')
+#training_data.from_file('data/minimum.csv')
+training_data.from_hdf('data/energy_lagged.hdf5')
 experiment = experiment_class()
 pset = experiment.get_pset(training_data.num_variables, training_data.variable_type_indices,
                            training_data.variable_names, training_data.variable_dict)
