@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# usage: build_models experiment_name data num_runs
-EXP="~/rtresults/${data}/${experiment}"
+# usage: build_models experiment_name data_path data_name num_runs
+EXP="${HOME}/rtresults/${3}/${1}"
 mkdir -p "${EXP}/saved_models"
 mkdir -p "${EXP}/logs"
 mkdir -p "${EXP}/results"
