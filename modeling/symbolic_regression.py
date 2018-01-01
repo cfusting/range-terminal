@@ -1,17 +1,17 @@
 import argparse
 
-import numpy as np
-
 from sklearn.model_selection import train_test_split
 
 from fastgp.logging.reports import save_log_to_csv
 
 from fastsr.experiments.control import Control
+from fastsr.experiments.most_simple import MostSimple
 from fastsr.estimators.symbolic_regression import SymbolicRegression
 from fastsr.containers.learning_data import LearningData
 
 from experiments.range_terminal import RT
 from experiments.range_terminal_no_mutation import RTNOMUT
+from experiments.range_terminal_simple import MostSimpleRT
 import utils
 
 parser = argparse.ArgumentParser(description='Run symbolic regression.')
@@ -27,7 +27,11 @@ if args.experiment == 'Control':
     experiment_class, experiment_name = utils.get_experiment_class_and_name(Control)
 elif args.experiment == 'RT':
     experiment_class, experiment_name = utils.get_experiment_class_and_name(RT)
-else:
+elif args.experiment == 'MostSimple':
+    experiment_class, experiment_name = utils.get_experiment_class_and_name(MostSimple)
+elif args.experiment == 'MostSimpleRT':
+    experiment_class, experiment_name = utils.get_experiment_class_and_name(MostSimpleRT)
+elif args.experiment == 'RTNOMUT':
     experiment_class, experiment_name = utils.get_experiment_class_and_name(RTNOMUT)
 training_data = LearningData()
 training_data.from_file(args.data)
@@ -41,7 +45,7 @@ model = SymbolicRegression(experiment_class=experiment_class,
                            variable_dict=training_data.variable_dict,
                            num_features=training_data.num_variables,
                            pop_size=100,
-                           ngen=1000,
+                           ngen=500,
                            crossover_probability=.5,
                            mutation_probability=.5,
                            subset_proportion=.7,
@@ -53,10 +57,10 @@ test_error = model.score(X_test, y_test)
 print('Model validation error: ' + str(validation_error))
 print('Model test error: ' + str(test_error))
 ident = experiment_name + '_' + training_data.name + '_'
-model.save(args.model + '/' + ident + '_' + str(args.seed))
+model.save(args.model + '/' + ident + str(args.seed))
 if args.output:
-    with open(args.output + '/' + ident + '_validation.txt', 'a') as f:
+    with open(args.output + '/' + ident + 'validation.txt', 'a') as f:
         f.write(str(validation_error) + '\n')
-    with open(args.output + '/' + ident + '_test.txt', 'a') as f:
+    with open(args.output + '/' + ident + 'test.txt', 'a') as f:
         f.write(str(test_error) + '\n')
-    save_log_to_csv(model.logbook_, args.logs + '/' + ident + '_' + str(args.seed))
+    save_log_to_csv(model.logbook_, args.logs + '/' + ident + str(args.seed))

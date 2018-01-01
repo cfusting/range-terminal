@@ -1,15 +1,19 @@
 rm(list=ls())
 
 getDataFrame <- function(experiment.name, data_set_name, directory) {
-  files <- list.files(directory, pattern = paste("^", experiment.name, data_set_name, "\\d+.log", sep="_"), full.names = TRUE)
+  print(directory)
+  pat <- paste(experiment.name, data_set_name, "_\\d+.csv", sep="_")
+  print(pat)
+  files <- list.files(directory, pattern = pat, full.names = TRUE)
   for(file in files) {
     cat("Matched file:", file, "\n")
   }
-  pattern <- paste(experiment.name, data_set_name, "\\d+.log", sep="_")
+  pattern <- paste(experiment.name, data_set_name, "_\\d+.csv", sep="_")
   seeds <- unlist(lapply(files, function(x) { 
     m <- regexpr(pattern, x) 
     seed <- regmatches(x, m)
-    st <- regmatches(seed, regexpr("_(\\d+).log", seed))
+    print(seed)
+    st <- regmatches(seed, regexpr("__(\\d+).csv", seed))
     return(regmatches(st, regexpr("\\d+", st)))
   }))
   dats <- lapply(files, read.csv)
@@ -26,20 +30,21 @@ calcAvg <- function(dat) {
   return(aggregate(dat, by=list(gen = dat$generation), FUN = mean))
 }
 
-DATA.SET <- "minimum"
+DATA.SET <- "energy_lagged"
+DATA.SET.NAME <- "energy_lagged"
 DATA.TYPE <- "csv"
-EXP1.id <- "Control"
-EXP2.id <- "RT"
-EXP1.name <- "Control"
+EXP1.id <- "MostSimple"
+EXP2.id <- "MostSimpleRT"
+EXP1.name <- "MostSimple"
 EXP2.name <- "Range Terminal"
 EXP1.SUB <- "Without Range Operator"
 EXP2.SUB <- "With Range Operator"
 EXP1 <- paste(DATA.SET, EXP1.id, sep = "_")
 EXP2 <- paste(DATA.SET, EXP2.id, sep = "_")
-EXP1.dir <- paste("~/rtresults/min_approximation", EXP1.id, sep = "/")
-EXP1.dir <- paste("~/rtresults/min_approximation", EXP1.id, sep = "/")
-exp1 <- getDataFrame(EXP1, DATA.SET, EXP1.dir) 
-exp2 <- getDataFrame(EXP2, DATA.SET, EXP2.dir)
+EXP1.dir <- paste("~/rtresults", DATA.SET.NAME, EXP1.id, "logs", sep = "/")
+EXP2.dir <- paste("~/rtresults", DATA.SET.NAME, EXP2.id, "logs", sep = "/")
+exp1 <- getDataFrame(EXP1.id, DATA.SET, EXP1.dir) 
+exp2 <- getDataFrame(EXP2.id, DATA.SET, EXP2.dir)
 
 library(ggplot2)
 XMAX <- max(exp1$generation, exp2$generation)

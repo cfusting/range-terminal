@@ -8,7 +8,7 @@ from fastgp.utilities import operators, metrics
 
 from fastsr.experiments import control
 
-NAME = 'RT'
+NAME = 'MostSimpleRT'
 
 
 class RT(control.Control):
@@ -65,4 +65,6 @@ class RT(control.Control):
         pset = super(RT, self).get_pset(num_predictors, variable_type_indices, names, variable_dict)
         for i in range(10):
             pset.add_parametrized_terminal(sp.RangeOperationTerminal)
+        for i in range(10):
+            pset.add_parametrized_terminal(sp.MomentFindingTerminal)
         return pset

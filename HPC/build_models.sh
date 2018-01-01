@@ -4,6 +4,7 @@ EXP="${HOME}/rtresults/${3}/${1}"
 mkdir -p "${EXP}/saved_models"
 mkdir -p "${EXP}/logs"
 mkdir -p "${EXP}/results"
+cp "${RTHOME}/modeling/symbolic_regression.py" "${EXP}"
 for i in `seq 1 ${4}`
 do
 	seed=${RANDOM}
