@@ -1,20 +1,31 @@
+rm(list=ls())
 range01 <- function(x){(x)/(max(x))}
-control <- read.csv("~/rtresults/min_approximation/Control_test.txt")
-experiment <- read.csv("~/rtresults/min_approximation/RT_test.txt")
+#control <- read.csv('~/Desktop/TruncationElite_energy_lagged.csv')
+#experiment <- read.csv('~/Desktop/TruncationEliteRT_energy_lagged.csv')
+control <- read.csv('~/Desktop/MostSimple_minimum.csv')
+experiment <- read.csv('~/Desktop/MostSimpleRTLots_minimum.csv')
+NUM_SAMPLES <- min(length(experiment$Ensemble5), length(control$Ensemble5))
+control <- data.frame(control[-(NUM_SAMPLES:nrow(control)+1), ])
+experiment <- data.frame(experiment[-(NUM_SAMPLES:nrow(experiment)+1), ])
 both <- rbind(control, experiment)
-both <- both$test_error
-both <- c(both, 83.050468)
-NUM_SAMPLES <- 30
-control$test_error_scaled <- range01(both)[1:NUM_SAMPLES]
-experiment$test_error_scaled <- range01(both)[NUM_SAMPLES + 1:NUM_SAMPLES * 2]
-exp.mu.scaled <- range01(both)[NUM_SAMPLES * 2 + 1]
+both <- both$error
+#both <- c(both, mean(experiment$error))
+#control$test_error_scaled <- range01(both)[1:NUM_SAMPLES]
+#experiment$test_error_scaled <- range01(both)[NUM_SAMPLES + 1:NUM_SAMPLES * 2]
+#exp.mu.scaled <- range01(both)[NUM_SAMPLES * 2 + 1]
 summary(control)
 summary(experiment)
-wilcox.test(control$test_error_scaled, experiment$test_error_scaled, 
+wilcox.test(control$Ensemble1, experiment$Ensemble1, 
             conf.level = 0.99, conf.int = TRUE)
-wilcox.test(control$test_error_scaled, mu = exp.mu.scaled, alternative = "l", 
+wilcox.test(control$Ensemble5, experiment$Ensemble5, 
             conf.level = 0.99, conf.int = TRUE)
-rm(list=ls())
+wilcox.test(control$Ensemble10, experiment$Ensemble10, 
+            conf.level = 0.99, conf.int = TRUE)
+wilcox.test(control$Ensemble20, experiment$Ensemble20, 
+            conf.level = 0.99, conf.int = TRUE)
+#wilcox.test(control$test_error_scaled, mu = exp.mu.scaled, alternative = "l", 
+#            conf.level = 0.99, conf.int = TRUE)
+#rm(list=ls())
 
 #getInfIndex <- function(x) {
 #  inf.index <- nrow(x) + 1

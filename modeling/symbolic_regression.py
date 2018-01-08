@@ -4,14 +4,12 @@ from sklearn.model_selection import train_test_split
 
 from fastgp.logging.reports import save_log_to_csv
 
-from fastsr.experiments.control import Control
-from fastsr.experiments.most_simple import MostSimple
+from fastsr.experiments.truncation_elite import TruncationElite
 from fastsr.estimators.symbolic_regression import SymbolicRegression
 from fastsr.containers.learning_data import LearningData
 
-from experiments.range_terminal import RT
-from experiments.range_terminal_no_mutation import RTNOMUT
-from experiments.range_terminal_simple import MostSimpleRT
+from experiments.truncation_elite_rt import TruncationEliteRT
+from experiments.truncation_elite_rt_no_mut import TruncationEliteRTNOMUT
 import utils
 
 parser = argparse.ArgumentParser(description='Run symbolic regression.')
@@ -23,16 +21,13 @@ parser.add_argument('-l', '--logs', help='Path to logging folder.', required=Tru
 parser.add_argument('-s', '--seed', help='Random seed.', type=int)
 args = parser.parse_args()
 
-if args.experiment == 'Control':
-    experiment_class, experiment_name = utils.get_experiment_class_and_name(Control)
-elif args.experiment == 'RT':
-    experiment_class, experiment_name = utils.get_experiment_class_and_name(RT)
-elif args.experiment == 'MostSimple':
-    experiment_class, experiment_name = utils.get_experiment_class_and_name(MostSimple)
-elif args.experiment == 'MostSimpleRT':
-    experiment_class, experiment_name = utils.get_experiment_class_and_name(MostSimpleRT)
-elif args.experiment == 'RTNOMUT':
-    experiment_class, experiment_name = utils.get_experiment_class_and_name(RTNOMUT)
+if args.experiment == 'TruncationElite':
+    experiment_class, experiment_name = utils.get_experiment_class_and_name(TruncationElite)
+elif args.experiment == 'TruncationEliteRT':
+    experiment_class, experiment_name = utils.get_experiment_class_and_name(TruncationEliteRT)
+elif args.experiment == 'TruncationEliteRTNOMUT':
+    experiment_class, experiment_name = utils.get_experiment_class_and_name(TruncationEliteRTNOMUT)
+
 training_data = LearningData()
 training_data.from_file(args.data)
 X_train, X_test, y_train, y_test = train_test_split(training_data.predictors, training_data.response, test_size=0.2,
@@ -44,8 +39,8 @@ model = SymbolicRegression(experiment_class=experiment_class,
                            variable_names=training_data.variable_names,
                            variable_dict=training_data.variable_dict,
                            num_features=training_data.num_variables,
-                           pop_size=100,
-                           ngen=500,
+                           pop_size=500,
+                           ngen=3000,
                            crossover_probability=.5,
                            mutation_probability=.5,
                            subset_proportion=.7,

@@ -2,16 +2,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from fastsr.estimators.symbolic_regression import SymbolicRegression
-from fastsr.experiments.control import Control
 from fastsr.containers.learning_data import LearningData
-
-from experiments.range_terminal import RT
+from fastsr.experiments.truncation_elite import TruncationElite
+from experiments.truncation_elite_rt import TruncationEliteRT
 import utils
 
 best_num = 0
-experiment_class, experiment_name = utils.get_experiment_class_and_name(RT)
+experiment_class, experiment_name = utils.get_experiment_class_and_name(TruncationEliteRT)
 model = SymbolicRegression()
-model.load('/home/cfusting/rtresults/energy_lagged/saved_models/' + experiment_name + '_energy_lagged_5503')
+model.load('/home/cfusting/rtresults_short_run/energy_lagged/' + experiment_name + '/saved_models/' +
+           experiment_name + '_energy_lagged_23402.pkl')
 
 training_data = LearningData()
 #training_data.from_file('data/minimum.csv')
@@ -96,9 +96,9 @@ for k, v in best_genealogy.items():
         ypoints.extend([ypoints[0], y3, ypoints[0], y3, ypoints[1], y3])
         # print('Connecting: (' + str(x1) + ' ,' + str(y1) + ') - (' + str(x2) + ' ,' + str(y2) + ')')
     plt.plot(xpoints, ypoints, marker='o')
-plt.savefig('results/' + experiment_name + '_genealogy.png', figsize=(10, 10), dpi=200)
+plt.savefig('/home/cfusting/Desktop/' + experiment_name + '_genealogy.png', figsize=(10, 10), dpi=200)
 
-with open('results/' + experiment_name + '_genealogy.txt', 'w') as f:
+with open('/home/cfusting/Desktop/' + experiment_name + '_genealogy.txt', 'w') as f:
     f.write(str(best_genealogy) + '\n')
     f.write('----------------------' + '\n')
     for k, v in best_genealogy.items():

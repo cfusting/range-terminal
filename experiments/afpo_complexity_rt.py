@@ -2,16 +2,16 @@ import math
 from functools import partial
 
 from fastgp.parametrized import simple_parametrized_terminals as sp
-from fastgp.algorithms import afpo, fast_evaluate
+from fastgp.algorithms import afpo
 from fastgp.parametrized import mutation
 from fastgp.utilities import operators, metrics
 
-from fastsr.experiments import control
+from fastsr.experiments import afpo_complexity
 
-NAME = 'MostSimpleRT'
+NAME = 'AfpoComplexityRT'
 
 
-class RT(control.Control):
+class AfpoComplexityRT(afpo_complexity.AfpoComplexity):
 
     def __init__(self,
                  ngen=50,
@@ -30,7 +30,7 @@ class RT(control.Control):
                  subset_change_frequency=10,
                  error_function=metrics.mean_squared_error,
                  num_randoms=1):
-        super(RT, self).__init__(ngen,
+        super(AfpoComplexityRT, self).__init__(ngen,
                                  pop_size,
                                  tournament_size,
                                  min_depth_init,
@@ -49,7 +49,7 @@ class RT(control.Control):
 
     def get_toolbox(self, predictors, response, pset, variable_type_indices, variable_names, test_predictors=None,
                     test_response=None):
-        toolbox = super(RT, self).get_toolbox(predictors, response, pset, variable_type_indices, variable_names)
+        toolbox = super(AfpoComplexityRT, self).get_toolbox(predictors, response, pset, variable_type_indices, variable_names)
         mutations = [partial(sp.mutate_single_parametrized_node, stdev_calc=math.sqrt),
                      partial(operators.mutation_biased, expr=toolbox.grow, node_selector=toolbox.koza_node_selector)]
         toolbox.register("mutate", mutation.multi_mutation_exclusive, mutations=mutations, probs=[.5, .5])
@@ -62,7 +62,7 @@ class RT(control.Control):
         return toolbox
 
     def get_pset(self, num_predictors, variable_type_indices, names, variable_dict):
-        pset = super(RT, self).get_pset(num_predictors, variable_type_indices, names, variable_dict)
+        pset = super(AfpoComplexityRT, self).get_pset(num_predictors, variable_type_indices, names, variable_dict)
         for i in range(10):
             pset.add_parametrized_terminal(sp.RangeOperationTerminal)
         for i in range(10):
