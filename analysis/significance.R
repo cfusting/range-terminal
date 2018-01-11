@@ -2,8 +2,8 @@ rm(list=ls())
 range01 <- function(x){(x)/(max(x))}
 #control <- read.csv('~/Desktop/TruncationElite_energy_lagged.csv')
 #experiment <- read.csv('~/Desktop/TruncationEliteRT_energy_lagged.csv')
-control <- read.csv('~/Desktop/MostSimple_minimum.csv')
-experiment <- read.csv('~/Desktop/MostSimpleRTLots_minimum.csv')
+control <- read.csv('~/rtresults_1000_100/TruncationEliteRTNOMUT_energy_lagged.csv')
+experiment <- read.csv('~/rtresults_1000_100/TruncationEliteRT_energy_lagged.csv')
 NUM_SAMPLES <- min(length(experiment$Ensemble5), length(control$Ensemble5))
 control <- data.frame(control[-(NUM_SAMPLES:nrow(control)+1), ])
 experiment <- data.frame(experiment[-(NUM_SAMPLES:nrow(experiment)+1), ])
@@ -17,12 +17,12 @@ summary(control)
 summary(experiment)
 wilcox.test(control$Ensemble1, experiment$Ensemble1, 
             conf.level = 0.99, conf.int = TRUE)
-wilcox.test(control$Ensemble5, experiment$Ensemble5, 
-            conf.level = 0.99, conf.int = TRUE)
-wilcox.test(control$Ensemble10, experiment$Ensemble10, 
-            conf.level = 0.99, conf.int = TRUE)
-wilcox.test(control$Ensemble20, experiment$Ensemble20, 
-            conf.level = 0.99, conf.int = TRUE)
+#wilcox.test(control$Ensemble5, experiment$Ensemble5, 
+#            conf.level = 0.99, conf.int = TRUE)
+#wilcox.test(control$Ensemble10, experiment$Ensemble10, 
+#            conf.level = 0.99, conf.int = TRUE)
+#wilcox.test(control$Ensemble20, experiment$Ensemble20, 
+#            conf.level = 0.99, conf.int = TRUE)
 #wilcox.test(control$test_error_scaled, mu = exp.mu.scaled, alternative = "l", 
 #            conf.level = 0.99, conf.int = TRUE)
 #rm(list=ls())

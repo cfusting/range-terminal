@@ -30,8 +30,8 @@ calcAvg <- function(dat) {
   return(aggregate(dat, by=list(gen = dat$generation), FUN = mean))
 }
 
-DATA.SET <- "energy_lagged"
-DATA.SET.NAME <- 'energy_lagged'
+DATA.SET <- "min_approx"
+DATA.SET.NAME <- 'minimum'
 subtitle <- 'Appliance Energy Use.'
 EXP1.id <- "TruncationElite"
 EXP2.id <- "TruncationEliteRT"
@@ -39,8 +39,8 @@ EXP1.name <- "Control"
 EXP2.name <- "Range Terminal"
 EXP1.SUB <- "No Range Terminals"
 EXP2.SUB <- "Range Terminals"
-EXP1.dir <- paste("~/rtresults", DATA.SET, EXP1.id, "logs", sep = "/")
-EXP2.dir <- paste("~/rtresults", DATA.SET, EXP2.id, "logs", sep = "/")
+EXP1.dir <- paste("~/rtresults_1000_100", DATA.SET, EXP1.id, "logs", sep = "/")
+EXP2.dir <- paste("~/rtresults_1000_100", DATA.SET, EXP2.id, "logs", sep = "/")
 exp1 <- getDataFrame(EXP1.id, DATA.SET.NAME, EXP1.dir) 
 exp2 <- getDataFrame(EXP2.id, DATA.SET.NAME, EXP2.dir)
 
@@ -92,10 +92,10 @@ min(exp2.avg$avg_fitness)
 #  geom_point() + labs(title = "Average Fitness Averaged Over Seeds") +
 #  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5)) +
 #  ylim(0, 1) + xlim(0, XMAX.avg)
-ggplot(exps, aes(generation, avg_parametrized, colour = experiment)) + 
-  geom_line() + labs(title = "Average Parametrized Terminals Averaged Over Seeds") +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5)) +
-  ylim(0, 1) + xlim(0, XMAX.avg)
+#ggplot(exps, aes(generation, avg_parametrized, colour = experiment)) + 
+#  geom_line() + labs(title = "Average Parametrized Terminals Averaged Over Seeds") +
+#  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5)) +
+#  ylim(0, 1) + xlim(0, XMAX.avg)
 
 sqrt(min(exp1$min_fitness))
 sqrt(min(exp2$min_fitness))

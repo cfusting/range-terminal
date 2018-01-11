@@ -26,26 +26,26 @@ class TruncationEliteRTNOMUT(TruncationElite):
                  error_function=metrics.mean_squared_error,
                  num_randoms=1):
         super(TruncationEliteRTNOMUT, self).__init__(ngen,
-                                                pop_size,
-                                                tournament_size,
-                                                min_depth_init,
-                                                max_dept_init,
-                                                max_height,
-                                                max_size,
-                                                crossover_probability,
-                                                mutation_probability,
-                                                internal_node_selection_bias,
-                                                min_gen_grow,
-                                                max_gen_grow,
-                                                subset_proportion,
-                                                subset_change_frequency,
-                                                error_function,
-                                                num_randoms)
+                                                     pop_size,
+                                                     tournament_size,
+                                                     min_depth_init,
+                                                     max_dept_init,
+                                                     max_height,
+                                                     max_size,
+                                                     crossover_probability,
+                                                     mutation_probability,
+                                                     internal_node_selection_bias,
+                                                     min_gen_grow,
+                                                     max_gen_grow,
+                                                     subset_proportion,
+                                                     subset_change_frequency,
+                                                     error_function,
+                                                     num_randoms)
 
     def get_toolbox(self, predictors, response, pset, variable_type_indices, variable_names, test_predictors=None,
                     test_response=None):
         toolbox = super(TruncationEliteRTNOMUT, self).get_toolbox(predictors, response, pset, variable_type_indices,
-                                                             variable_names)
+                                                                  variable_names)
         return toolbox
 
     def get_pset(self, num_predictors, variable_type_indices, names, variable_dict):

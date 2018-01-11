@@ -55,10 +55,11 @@ class TruncationEliteRT(TruncationElite):
                      partial(operators.mutation_biased, expr=toolbox.grow,
                              node_selector=operators.uniform_depth_node_selector)]
         toolbox.register("mutate", mutation.multi_mutation_exclusive, mutations=mutations, probs=[.5, .5])
-        toolbox.decorate('mutate', self.history.decorator)
+        # toolbox.decorate('mutate', self.history.decorator)
         toolbox.register("run", truncation_with_elite.optimize, population=self.pop, toolbox=toolbox,
                          ngen=self.ngen, stats=self.mstats, archive=self.multi_archive, verbose=False,
-                         history=self.history)
+                         history=None)
+                         # history=self.history)
         return toolbox
 
     def get_pset(self, num_predictors, variable_type_indices, names, variable_dict):

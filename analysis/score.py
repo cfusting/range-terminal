@@ -38,6 +38,7 @@ with open(args.results + '/' + get_ident(files[0]) + '.csv', 'w') as results:
     results.write(header)
     results.write('\n')
     for f in files:
+        print('Loading file: ' + str(f))
         seed = get_seed(f)
         model = SymbolicRegression()
         model.load(args.models + '/' + f)
