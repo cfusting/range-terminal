@@ -10,8 +10,8 @@ import utils
 best_num = 0
 experiment_class, experiment_name = utils.get_experiment_class_and_name(TruncationEliteRT)
 model = SymbolicRegression()
-model.load('/home/cfusting/rtresults_short_run/energy_lagged/' + experiment_name + '/saved_models/' +
-           experiment_name + '_energy_lagged_23402.pkl')
+model.load('/home/cfusting/rtresults_1000_100/energy_lagged/' + experiment_name + '/saved_models/' +
+           experiment_name + '_energy_lagged_3965.pkl')
 
 training_data = LearningData()
 #training_data.from_file('data/minimum.csv')
@@ -25,32 +25,32 @@ for individual in model.best_individuals_:
     if hasattr(individual, 'history_index'):
         best_individuals.append(individual)
 best_genealogy = model.history_.getGenealogy(best_individuals[best_num])
-maxgen = 0
-maxerror = 0
 errors = []
 
 
-def populate_individuals(history_index, generation):
-    global maxgen
-    global maxerror
-    ind = model.history_.genealogy_history[history_index]
-    if not hasattr(ind, 'visited'):
-        ind.visited = True
-        ind.error = scoring_toolbox.score(ind)[0]
-        ind.generation = generation
-        errors.append(ind.error)
-        if ind.error > maxerror:
-            maxerror = ind.error
-        parents = best_genealogy[history_index]
-        if len(parents) > 0:
-            populate_individuals(parents[0], generation + 1)
-        if len(parents) > 1:
-            populate_individuals(parents[1], generation + 1)
-    else:
-        print('Loopback found to node: ' + str(history_index))
+def populate_individuals(history_index):
+    generation = 1
+    stack = []
+    stack.append(history_index)
+    while len(stack) > 0:
+        history_index = stack.pop()
+        ind = model.history_.genealogy_history[history_index]
+        if not hasattr(ind, 'visited'):
+            ind.visited = True
+            ind.error = scoring_toolbox.score(ind)[0]
+            ind.generation = generation
+            generation += 1
+            errors.append(ind.error)
+            parents = best_genealogy[history_index]
+            if len(parents) > 0:
+                stack.append(parents[0])
+            if len(parents) > 1:
+                stack.append(parents[1])
+        else:
+            print('Loopback found to node: ' + str(history_index))
 
 keys = best_genealogy.keys()
-populate_individuals(max(keys), 1)
+populate_individuals(max(keys))
 for i in best_genealogy:
     print(str(i), str(best_genealogy[i]))
 dupes = (len(keys) != len(set(keys)))
@@ -103,14 +103,14 @@ with open('/home/cfusting/Desktop/' + experiment_name + '_genealogy.txt', 'w') a
     f.write('----------------------' + '\n')
     for k, v in best_genealogy.items():
         offspring = model.history_.genealogy_history[k]
-        f.write(str(offspring.generation) + '| Offspring ' + str(k) + ', Score: ' + str(safe_log(offspring.error)) +
+        f.write(str(offspring.generation) + '| Offspring ' + str(k) + ', Score: ' + str(offspring.error) +
                 ': ' + str(offspring) + '\n')
         if len(v) > 0:
             parent1 = model.history_.genealogy_history[v[0]]
-            f.write(str(parent1.generation) + '| Parent ' + str(v[0]) + ', Score: ' + str(safe_log(parent1.error)) +
+            f.write(str(parent1.generation) + '| Parent ' + str(v[0]) + ', Score: ' + str(parent1.error) +
                     ': ' + str(parent1) + '\n')
         if len(v) > 1:
             parent2 = model.history_.genealogy_history[v[1]]
-            f.write(str(parent2.generation) + '| Parent ' + str(v[1]) + ', Score: ' + str(safe_log(parent2.error)) +
+            f.write(str(parent2.generation) + '| Parent ' + str(v[1]) + ', Score: ' + str(parent2.error) +
                     ': ' + str(parent2) + '\n')
         f.write('----------------------' + '\n')
