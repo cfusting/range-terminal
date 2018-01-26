@@ -7,6 +7,6 @@ for i in `seq 1 ${5}`
 do
 	seed=${RANDOM}
 	qsub -N efs_${1}_${seed} -v data=${2},seed=${seed},experiment=${1},rangeoperators=${4},EXP=${EXP} \
-	"${RTHOME}/HPC/evolutionary_feature_synthesis.sh"
+	"${RTHOME}/HPC/efs.sh"
 	echo "Run ${i}: ${1} started with seed ${seed}"
 done
