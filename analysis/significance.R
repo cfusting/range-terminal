@@ -1,61 +1,32 @@
 rm(list=ls())
-range01 <- function(x){(x)/(max(x))}
-#control <- read.csv('~/Desktop/TruncationElite_energy_lagged.csv')
-#experiment <- read.csv('~/Desktop/TruncationEliteRT_energy_lagged.csv')
+#control <- read.csv('~/efsscores/energy_lagged/control/scores.txt')
+#experiment <- read.csv('~/efsscores/energy_lagged/rt/scores.txt')
+#colnames(control)[3] <- 'error'
+#colnames(experiment)[3] <- 'error'
+#control[20,] <- NA
+#experiment[40,] <- NA
 control <- read.csv('~/rtresults_1000_100/TruncationEliteRTNOMUT_energy_lagged.csv')
 experiment <- read.csv('~/rtresults_1000_100/TruncationEliteRT_energy_lagged.csv')
-NUM_SAMPLES <- min(length(experiment$Ensemble5), length(control$Ensemble5))
+colnames(control)[2] <- 'error'
+colnames(experiment)[2] <- 'error'
+NUM_SAMPLES <- min(length(experiment$error), length(control$error))
 control <- data.frame(control[-(NUM_SAMPLES:nrow(control)+1), ])
+control[is.infinite(control$error),] <- NA
 experiment <- data.frame(experiment[-(NUM_SAMPLES:nrow(experiment)+1), ])
-both <- rbind(control, experiment)
-both <- both$error
-#both <- c(both, mean(experiment$error))
-#control$test_error_scaled <- range01(both)[1:NUM_SAMPLES]
-#experiment$test_error_scaled <- range01(both)[NUM_SAMPLES + 1:NUM_SAMPLES * 2]
-#exp.mu.scaled <- range01(both)[NUM_SAMPLES * 2 + 1]
+experiment[is.infinite(experiment$Ensemble1),] <- NA
 summary(control)
 summary(experiment)
-wilcox.test(control$Ensemble1, experiment$Ensemble1, 
-            conf.level = 0.99, conf.int = TRUE)
-#wilcox.test(control$Ensemble5, experiment$Ensemble5, 
-#            conf.level = 0.99, conf.int = TRUE)
-#wilcox.test(control$Ensemble10, experiment$Ensemble10, 
-#            conf.level = 0.99, conf.int = TRUE)
-#wilcox.test(control$Ensemble20, experiment$Ensemble20, 
-#            conf.level = 0.99, conf.int = TRUE)
-#wilcox.test(control$test_error_scaled, mu = exp.mu.scaled, alternative = "l", 
-#            conf.level = 0.99, conf.int = TRUE)
-#rm(list=ls())
+wilcox.test(control$error, experiment$error, 
+            conf.level = 0.95, conf.int = TRUE)
 
-#getInfIndex <- function(x) {
-#  inf.index <- nrow(x) + 1
-#  for(i in 1:nrow(x)) {
-#    if(x[i,]$test_error == Inf) {
-#      inf.index <- i
-#      break
-#    }
-#  } 
-#  return(inf.index)
-#}
-#control <- read.csv("~/symbolic_results/training_matrix_lst_snow_2002_2013_.15.hdf_control/training_matrix_lst_snow_2002_2013_.15_control_best_validation")
-#experiment <- read.csv("~/symbolic_results/training_matrix_lst_snow_2002_2013_.15.hdf_lesser_scaup/training_matrix_lst_snow_2002_2013_.15_lesser_scaup_best_validation")
-#control <- control[order(control$test_error), ]
-#control.inf.index <- getInfIndex(control)
-#experiment <- experiment[order(experiment$test_error), ]
-#experiment.inf.index <- getInfIndex(experiment)
-#remove.index <- min(control.inf.index, experiment.inf.index) - 1
-#control <- control[1:remove.index, ]
-#experiment <- experiment[1:remove.index, ]
-#both <- rbind(control, experiment)
-#both <- both$test_error
-#both <- c(both, 436449.887661)
-#both <- c(both, 429879.34591)
-#control$test_error_scaled <- range01(both)[1:39]
-#experiment$test_error_scaled <- range01(both)[40:78]
-#mu.scaled <- range01(both)[79]
-#cv.scaled <- range01(both)[80]
-#summary(control)
-#summary(experiment)
-#wilcox.test(control$test_error_scaled, experiment$test_error_scaled, conf.level = 0.99, conf.int = TRUE)
-#wilcox.test(control$test_error_scaled, mu = mu.scaled, alternative = "l", conf.level = 0.99, conf.int = TRUE)
-#wilcox.test(experiment$test_error_scaled, mu = mu.scaled, alternative = "l", conf.level = 0.99, conf.int = TRUE)
+#library(cowplot)
+#experiment.error <- data.frame(MSE = experiment$error, Experiment='SRRT')
+#control.error <- data.frame(MSE = control$error, Experiment='SR')
+#both <- rbind(experiment.error, control.error)
+#plot.error <- ggplot(both, aes(Experiment, MSE, fill=Experiment)) + 
+#  geom_boxplot() + guides(fill=FALSE)
+#plot.error
+#
+#save_plot(paste('/home/cfusting/Dropbox/rtpaper/', 'whiskers', ".pdf", sep = ''), plot.error,
+#          base_aspect_ratio = 1.3 # make room for figure legend
+#)
